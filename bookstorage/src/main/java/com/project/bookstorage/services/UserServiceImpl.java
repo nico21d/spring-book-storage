@@ -24,7 +24,6 @@ public class UserServiceImpl implements UserService {
         this.repo = repo;
     }
 
-    @Override
     public String addUser(UserDto userDto) {
         if(!repo.existsByUsername(userDto.getUsername())) {
             UserEntity user = new UserEntity();
