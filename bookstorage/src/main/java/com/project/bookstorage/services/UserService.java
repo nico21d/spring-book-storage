@@ -12,4 +12,5 @@ public interface UserService {
     UserResponse getAllUsers(int pageNo, int pageSize);
     String deleteUser(@NonNull Long id);
     String updateUser(@NonNull Long id, UserDto userDto);
+    String addBook(@NonNull Long id, long isbn);
 }

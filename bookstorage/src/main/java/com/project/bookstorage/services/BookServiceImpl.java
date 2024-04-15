@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 import com.project.bookstorage.dtos.BookResponse;
 import com.project.bookstorage.exceptions.BookDoesNotExistException;
@@ -12,6 +13,7 @@ import com.project.bookstorage.exceptions.ExistingBookException;
 import com.project.bookstorage.models.Book;
 import com.project.bookstorage.repositories.BookRepository;
 
+@Service
 public class BookServiceImpl implements BookService{
 
     private BookRepository repo;
@@ -29,7 +31,7 @@ public class BookServiceImpl implements BookService{
         }
     }
 
-    public String deleteBook(int isbn) {
+    public String deleteBook(long isbn) {
         Book book = repo.findById(isbn).orElseThrow(() -> new BookDoesNotExistException());
         repo.delete(book);
         return book.getTitle();
@@ -44,7 +46,7 @@ public class BookServiceImpl implements BookService{
         }
     }
 
-    public Book getBookById(int isbn) {
+    public Book getBookById(long isbn) {
         Book book = repo.findById(isbn).orElseThrow(() -> new BookDoesNotExistException());
         return book;
     }

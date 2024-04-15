@@ -36,7 +36,7 @@ public class UserController {
         return new ResponseEntity<>(userService.addUser(user), HttpStatus.CREATED);
     }
 
-    @GetMapping("/getUser/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<UserDto> getUserById(@PathVariable @NonNull Long id) {
         return new ResponseEntity<>(userService.getUserById(id), HttpStatus.OK);
     }
@@ -45,7 +45,7 @@ public class UserController {
     public ResponseEntity<UserResponse> getAllUsers(
         @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo, 
         @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize) {
-        return new ResponseEntity<>(userService.getAllUsers(pageNo, pageSize), HttpStatus.OK);
+            return new ResponseEntity<>(userService.getAllUsers(pageNo, pageSize), HttpStatus.OK);
     }
 
     @DeleteMapping("/deleteUser/{id}")
@@ -56,6 +56,11 @@ public class UserController {
     @PutMapping("/updateUser/{id}")
     public ResponseEntity<String> updateUser(@PathVariable @NonNull Long id, @RequestBody UserDto userDto) {
         return new ResponseEntity<>(userService.updateUser(id, userDto), HttpStatus.OK);
+    }
+
+    @PutMapping("/addBook/{id}/{isbn}")
+    public ResponseEntity<String> addBook(@PathVariable @NonNull Long id, @PathVariable long isbn) {
+        return new ResponseEntity<>(userService.addBook(id, isbn), HttpStatus.ACCEPTED);
     }
 
 

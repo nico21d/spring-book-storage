@@ -1,6 +1,7 @@
 package com.project.bookstorage.services;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -10,25 +11,30 @@ import org.springframework.stereotype.Service;
 
 import com.project.bookstorage.dtos.UserDto;
 import com.project.bookstorage.dtos.UserResponse;
+import com.project.bookstorage.exceptions.BookDoesNotExistException;
 import com.project.bookstorage.exceptions.ExistingUserException;
 import com.project.bookstorage.exceptions.UserDoesNotExistException;
+import com.project.bookstorage.models.Book;
 import com.project.bookstorage.models.UserEntity;
+import com.project.bookstorage.repositories.BookRepository;
 import com.project.bookstorage.repositories.UserRepository;
 
 @Service
 public class UserServiceImpl implements UserService {
 
-    private UserRepository repo;
+    private UserRepository userRepository;
+    private BookRepository bookRepository;
 
-    public UserServiceImpl(UserRepository repo) {
-        this.repo = repo;
+    public UserServiceImpl(UserRepository userRepository, BookRepository bookRepository) {
+        this.userRepository = userRepository;
+        this.bookRepository = bookRepository;
     }
 
     public String addUser(UserDto userDto) {
-        if(!repo.existsByUsername(userDto.getUsername())) {
+        if(!userRepository.existsByUsername(userDto.getUsername())) {
             UserEntity user = new UserEntity();
             user.setUsername(userDto.getUsername());
-            repo.save(user);
+            userRepository.save(user);
             return user.getUsername();
         } else {
             throw new ExistingUserException();
@@ -36,18 +42,18 @@ public class UserServiceImpl implements UserService {
     }
 
     public UserDto getUserById(@NonNull Long id) {
-        UserEntity user = repo.findById(id).orElseThrow(() -> new UserDoesNotExistException());
+        UserEntity user = userRepository.findById(id).orElseThrow(() -> new UserDoesNotExistException());
         return UserDto.fromUser(user);
     }
 
     public UserDto getUserByUsername(@NonNull String username) {
-        UserEntity user = repo.findByUsername(username).orElseThrow(() -> new UserDoesNotExistException());
+        UserEntity user = userRepository.findByUsername(username).orElseThrow(() -> new UserDoesNotExistException());
         return UserDto.fromUser(user);
     }
 
     public UserResponse getAllUsers(int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
-        Page<UserEntity> users = repo.findAll(pageable);
+        Page<UserEntity> users = userRepository.findAll(pageable);
         List<UserEntity> userList = users.getContent();
         List <UserDto> content = userList.stream().map(user -> UserDto.fromUser(user)).toList();
 
@@ -63,19 +69,30 @@ public class UserServiceImpl implements UserService {
     }
 
     public String deleteUser(@NonNull Long id) {
-        UserEntity user = repo.findById(id).orElseThrow(() -> new UserDoesNotExistException());
-        repo.delete(user);
+        UserEntity user = userRepository.findById(id).orElseThrow(() -> new UserDoesNotExistException());
+        userRepository.delete(user);
         return "Deleted user " + user.getUsername();
 
     }
 
     public String updateUser(@NonNull Long id, UserDto userDto) {
-        UserEntity user = repo.findById(id).orElseThrow(() -> new UserDoesNotExistException());
+        UserEntity user = userRepository.findById(id).orElseThrow(() -> new UserDoesNotExistException());
         if(userDto != null) {
             user.setUsername(userDto.getUsername());
-            repo.save(user);
+            userRepository.save(user);
         }
         return "Updated user with id " + user.getId();
+    }
+
+    public String addBook(@NonNull Long id, long isbn) {
+        UserEntity user = userRepository.findById(id).orElseThrow(() -> new UserDoesNotExistException());
+        Book book = bookRepository.findById(isbn).orElseThrow(() -> new BookDoesNotExistException());
+        Set<Book> userBooks = user.getBooks();
+        userBooks.add(book);
+        user.setBooks(userBooks);
+        userRepository.save(user);
+
+        return "Added " + book.getTitle() + " to " + user.getUsername();
     }
     
 }

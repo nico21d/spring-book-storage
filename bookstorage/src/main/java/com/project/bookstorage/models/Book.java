@@ -13,7 +13,7 @@ import lombok.Data;
 public class Book {
     
     @Id
-    private int isbn;
+    private long isbn;
     private String title;
     private String author;
     private String genre;
