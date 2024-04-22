@@ -3,6 +3,7 @@ package com.project.bookstorage.services.auth;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -18,18 +19,14 @@ import com.project.bookstorage.services.UserService;
 @Service
 public class AuthenticationService {
 
+    @Autowired
     private UserService userService;
+
+    @Autowired
     private JwtService jwtService;
+
+    @Autowired
     private AuthenticationManager authenticationManager;
-
-    
-
-    public AuthenticationService(UserService userService, JwtService jwtService,
-            AuthenticationManager authenticationManager) {
-        this.userService = userService;
-        this.jwtService = jwtService;
-        this.authenticationManager = authenticationManager;
-    }
 
     public RegisteredUser registerUser(SaveUser newUser) {
         UserEntity user = userService.registerUser(newUser);

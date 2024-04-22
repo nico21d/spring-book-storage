@@ -1,5 +1,6 @@
 package com.project.bookstorage.controllers;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -18,11 +19,8 @@ import com.project.bookstorage.services.auth.AuthenticationService;
 @RequestMapping("/auth")
 public class AuthenticationController {
 
+    @Autowired
     private AuthenticationService authenticationService;
-
-    public AuthenticationController(AuthenticationService authenticationService) {
-        this.authenticationService = authenticationService;
-    }
 
     @GetMapping("validate")
     public ResponseEntity<Boolean> validate(@RequestParam String jwt) {

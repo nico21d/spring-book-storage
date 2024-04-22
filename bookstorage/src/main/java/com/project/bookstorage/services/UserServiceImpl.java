@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,16 +26,14 @@ import com.project.bookstorage.repositories.UserRepository;
 @Service
 public class UserServiceImpl implements UserService {
 
+    @Autowired
     private UserRepository userRepository;
-    private BookRepository bookRepository;
-    private PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository, BookRepository bookRepository,
-            PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.bookRepository = bookRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
+    @Autowired
+    private BookRepository bookRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public UserEntity registerUser(SaveUser newUser) {
 

@@ -1,5 +1,6 @@
 package com.project.bookstorage.controllers;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
@@ -28,13 +29,11 @@ import com.project.bookstorage.services.auth.AuthenticationService;
 @RequestMapping("/users")
 public class UserController {
 
+    @Autowired
     private UserService userService;
-    private AuthenticationService authenticationService;
 
-    public UserController(UserService userService, AuthenticationService authenticationService) {
-        this.userService = userService;
-        this.authenticationService = authenticationService;
-    }
+    @Autowired
+    private AuthenticationService authenticationService;
 
     @PostMapping("/addUser")
     public ResponseEntity<RegisteredUser> addUser(@RequestBody SaveUser newUser) {

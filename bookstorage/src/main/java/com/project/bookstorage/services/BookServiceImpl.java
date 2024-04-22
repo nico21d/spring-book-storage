@@ -2,6 +2,7 @@ package com.project.bookstorage.services;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -16,11 +17,8 @@ import com.project.bookstorage.repositories.BookRepository;
 @Service
 public class BookServiceImpl implements BookService{
 
+    @Autowired
     private BookRepository repo;
-
-    public BookServiceImpl(BookRepository repo) {
-        this.repo = repo;
-    }
 
     public String addBook(Book book) {
         if(!repo.existsById(book.getIsbn())) {

@@ -1,5 +1,6 @@
 package com.project.bookstorage.controllers;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -23,11 +24,8 @@ import com.project.bookstorage.services.BookService;
 @RequestMapping("/books")
 public class BookController {
 
+    @Autowired
     private BookService bookService;
-
-    public BookController(BookService bookService) {
-        this.bookService = bookService;
-    }
 
     @PostMapping("/addBook")
     public ResponseEntity<String> addBook(@RequestBody Book book) {
