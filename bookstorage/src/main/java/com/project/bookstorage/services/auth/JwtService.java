@@ -1,13 +1,15 @@
 package com.project.bookstorage.services.auth;
 
-import java.security.Key;
 import java.util.Date;
 import java.util.Map;
+
+import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -32,17 +34,26 @@ public class JwtService {
             .expiration(expiresAt)
             .header().add("typ", "JWT")
             .and()
-            .signWith(generateKey())
+            .signWith(generateKey(), Jwts.SIG.HS256)
             .compact();
 
     
         return jwt;
     }
 
-    private Key generateKey() {
-        
+    private SecretKey generateKey() {
+
         byte[] key = Decoders.BASE64.decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(key);
+    }
+
+    public String extractUsername(String jwt) {
+        return extractAllClaims(jwt).getSubject();
+    }
+
+    private Claims extractAllClaims(String jwt) {
+        return Jwts.parser().verifyWith(generateKey()).build()
+            .parseSignedClaims(jwt).getPayload();
     }
 
 }

@@ -39,6 +39,8 @@ public class SecurityConfig {
             .authenticationProvider(authenticationProvider())
             .authorizeHttpRequests(request ->  {
                 request.requestMatchers(HttpMethod.POST, "/users/addUser").permitAll();
+                request.requestMatchers(HttpMethod.POST, "/auth/authenticate").permitAll();
+                request.requestMatchers(HttpMethod.GET, "/auth/validate").permitAll();
                 request.anyRequest().authenticated();
             });
 
