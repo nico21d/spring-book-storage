@@ -15,25 +15,31 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.project.bookstorage.dtos.RegisteredUser;
+import com.project.bookstorage.dtos.SaveUser;
 import com.project.bookstorage.dtos.UserDto;
 import com.project.bookstorage.dtos.UserResponse;
 import com.project.bookstorage.exceptions.ExistingUserException;
 import com.project.bookstorage.exceptions.UserDoesNotExistException;
 import com.project.bookstorage.services.UserService;
+import com.project.bookstorage.services.auth.AuthenticationService;
 
 @RestController
 @RequestMapping("/users")
 public class UserController {
 
     private UserService userService;
+    private AuthenticationService authenticationService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, AuthenticationService authenticationService) {
         this.userService = userService;
+        this.authenticationService = authenticationService;
     }
 
     @PostMapping("/addUser")
-    public ResponseEntity<String> addUser(@RequestBody UserDto user) {
-        return new ResponseEntity<>(userService.addUser(user), HttpStatus.CREATED);
+    public ResponseEntity<RegisteredUser> addUser(@RequestBody SaveUser newUser) {
+        RegisteredUser registeredUser = authenticationService.registerUser(newUser);
+        return new ResponseEntity<>(registeredUser, HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
@@ -69,13 +75,13 @@ public class UserController {
     @ExceptionHandler(ExistingUserException.class)
     @ResponseStatus(code = HttpStatus.CONFLICT)
     public String existingUser() {
-        return "ERROR: Username already exists";
+        return "ERROR: User already exists";
     }
 
     @ExceptionHandler(UserDoesNotExistException.class)
     @ResponseStatus(code = HttpStatus.NOT_FOUND)
     public String inexistentUser() {
-        return "ERROR: Username does not exist";
+        return "ERROR: User does not exist";
     }
 
 }

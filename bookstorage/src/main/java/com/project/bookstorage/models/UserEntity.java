@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.project.bookstorage.models.util.Role;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -28,11 +29,12 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "user_table")
-public class UserEntity implements UserDetails{
+public class UserEntity implements UserDetails {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    @Column(unique = true)
     private String username;
     private String password;
 
